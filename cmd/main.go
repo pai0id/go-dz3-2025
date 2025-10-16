@@ -14,6 +14,6 @@ func main() {
 		{ID: 5, Type: task.Remove, Balance: 228},
 	}
 
-	task.Run(clients)
+	task.Run(&clients)
 	fmt.Println(clients)
 }

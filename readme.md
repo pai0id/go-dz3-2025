@@ -90,7 +90,7 @@ func addTaskTypeServer(add <-chan *Client, processedAdd chan<- *Client, wg *sync
 
 func finalServer(processedRemove <-chan *Client, processedAdd chan<- *Client, wg *sync.WaitGroup)
 
-func Run(clients []Client)
+func Run(clients *[]Client)
 ```
 
 dispatcher: получает клиентов из канала input и направляет их в канал remove или add в зависимости от поля Type.
@@ -99,9 +99,12 @@ removeTaskTypeServer: для клиентов из канала remove умен�
 
 addTaskTypeServer: для клиентов из канала add увеличивает Balance на 100 и отправляет в processedAdd.
 
-finalServer: для клиентов из processedRemove увеличивает Balance в 1.5 раза и устанавливает Type = Done; для клиентов из processedAdd уменьшает Balance в 2 раза и устанавливает Type = Done.
+finalServer: для клиентов из processedRemove увеличивает Balance в 1.5 раза (кэшбэк) и устанавливает Type = Done; для клиентов из processedAdd уменьшает Balance в 2 раза (налоги 0_0) и устанавливает Type = Done.
 
-Run: организует каналы, запускает горутины, отправляет клиентов в input, закрывает канал, ждет завершения всех горутин.
+Run: организует каналы, запускает горутины, отправляет клиентов в input, ждет завершения всех горутин.
+
+![alt text](flow.png)
+
 ### Пример работы
 
 В файле cmd/main.go приведен пример списка клиентов. После выполнения Run(clients) балансы клиентов изменяются согласно логике обработки, а тип устанавливается в Done.
@@ -112,10 +115,11 @@ Run: организует каналы, запускает горутины, о�
 - Использовать sync.WaitGroup для синхронизации завершения горутин.
 - Обеспечить корректную обработку всех клиентов без потери данных.
 - Код должен компилироваться и проходить все предоставленные тесты.
+- Задачка со звездочкой (необязательная) - сделайте так, что функции removeTaskTypeServer и addTaskTypeServer могут работать в нескольких экземплярах. Это нужно для того, чтобы на более сложные задачи можно было выделить больше обработчиков.
 
 ### Советы по реализации
 
 - В функциях использовать defer wg.Done() для корректного учета завершения горутины.
-- Использовать цикл for client := range channel для чтения из каналов.
+- Использовать цикл for client := range channel или select для чтения из каналов.
 - В Run использовать буферизованные каналы с достаточным размером буфера.
-- В finalServer использовать два отдельных цикла for range для чтения из processedRemove и processedAdd.
+- Не забывайте закрывать каналы.

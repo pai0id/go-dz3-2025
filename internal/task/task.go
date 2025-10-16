@@ -30,5 +30,5 @@ func addTaskTypeServer(add <-chan *Client, processedAdd chan<- *Client, wg *sync
 func finalServer(processedRemove <-chan *Client, processedAdd <-chan *Client, wg *sync.WaitGroup) {
 }
 
-func Run(clients []Client) {
+func Run(clients *[]Client) {
 }

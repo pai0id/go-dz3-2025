@@ -138,7 +138,7 @@ func TestRun(t *testing.T) {
 		{ID: 3, Type: Remove, Balance: 300},
 	}
 
-	Run(clients)
+	Run(&clients)
 
 	// Check results
 	if clients[0].Balance != 150 { // 200 - 100 = 100, then * 1.5 = 150
@@ -337,7 +337,7 @@ func TestFinalServerMultiple(t *testing.T) {
 
 func TestRunEmptySlice(t *testing.T) {
 	clients := []Client{}
-	Run(clients)
+	Run(&clients)
 	// Should not panic or error
 }
 
@@ -347,7 +347,7 @@ func TestRunOnlyRemove(t *testing.T) {
 		{ID: 2, Type: Remove, Balance: 300},
 	}
 
-	Run(clients)
+	Run(&clients)
 
 	if clients[0].Balance != 150 || clients[0].Type != Done {
 		t.Errorf("Client 0: expected balance 150, type Done, got %f, %v", clients[0].Balance, clients[0].Type)
@@ -363,7 +363,7 @@ func TestRunOnlyAdd(t *testing.T) {
 		{ID: 2, Type: Add, Balance: 50},
 	}
 
-	Run(clients)
+	Run(&clients)
 
 	if clients[0].Balance != 100 || clients[0].Type != Done {
 		t.Errorf("Client 0: expected balance 100, type Done, got %f, %v", clients[0].Balance, clients[0].Type)
