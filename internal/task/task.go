@@ -123,8 +123,8 @@ func Run(clients *[]Client) {
 	wg.Add(1)
 	go finalServer(processedRemove, processedAdd, &wg)
 
-	for i := range clients {
-		input <- &clients[i]
+	for i := range *clients {
+		input <- &(*clients)[i]
 	}
 	close(input)
 
